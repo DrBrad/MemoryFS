@@ -18,7 +18,7 @@ fn main() {
 
     if args.len() != 2 {
         eprintln!("Usage: {} <FOLDER_PATH>", args[0]);
-        std::process::exit(1);
+        exit(1);
     }
 
     let mountpoint = &args[1];
@@ -30,7 +30,7 @@ fn main() {
 
     let options = [
         MountOption::RW,
-        MountOption::FSName("KFS".to_string()),
+        MountOption::FSName("MemoryFS".to_string()),
         MountOption::Async
         //MountOption::AutoUnmount
     ];
