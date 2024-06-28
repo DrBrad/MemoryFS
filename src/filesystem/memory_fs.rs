@@ -285,11 +285,11 @@ impl Filesystem for MemoryFS {
     fn statfs(&mut self, _req: &Request, _ino: u64, reply: ReplyStatfs) {
         // Example values for total blocks, free blocks, available blocks, etc.
         reply.statfs(
-            1000000, // total blocks
-            500000,  // free blocks
-            500000,  // available blocks
+            134217728, // total blocks
+            134217728,  // free blocks
+            134217728,  // available blocks
             1000000, // total inodes
-            999995,  // free inodes
+            999999-self.next_ino,  // free inodes
             512,     // block size
             255,     // maximum name length
             0       // filesystem ID
