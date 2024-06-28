@@ -23,3 +23,10 @@ If your on linux and you want to make this a command type:
 ```
 cp MemoryFS/target/debug/MemoryFS /usr/local/bin/memoryfs
 ```
+
+Usage
+=====
+The usage is simple
+```
+memoryfs PATH/TO/MOUNT
+```
