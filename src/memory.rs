@@ -24,7 +24,6 @@ pub fn get_memory_info() -> (u64, u64) {
 #[cfg(target_os = "windows")]
 pub fn get_memory_info() -> (u64, u64) {
     use std::mem;
-    use std::ptr;
     use winapi::um::sysinfoapi::{GlobalMemoryStatusEx, MEMORYSTATUSEX};
 
     unsafe {
@@ -34,10 +33,10 @@ pub fn get_memory_info() -> (u64, u64) {
             let total_ram = mem_info.ullTotalPhys;
             let available_ram = mem_info.ullAvailPhys;
 
-            (total_ram, available_ram)
-        } else {
-            (0, 0)
+            return (total_ram, available_ram)
         }
+
+        (0, 0)
     }
 }
 
