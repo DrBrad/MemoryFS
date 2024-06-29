@@ -22,20 +22,43 @@ pub fn get_memory_info() -> (u64, u64) {
 }
 
 #[cfg(target_os = "windows")]
-pub fn get_memory_info() -> (u64, u64) {
-    use std::mem;
-    use winapi::um::sysinfoapi::{GlobalMemoryStatusEx, MEMORYSTATUSEX};
+pub fn get_memory_info() -> (u64, u64) {    #[allow(non_snake_case, clippy::upper_case_acronyms)]
+type BOOL = std::ffi::c_int;
+
+    #[allow(non_snake_case, clippy::upper_case_acronyms)]
+    type DWORD = u32;
+
+    #[allow(non_snake_case, clippy::upper_case_acronyms)]
+    type DWORDLONG = u64;
+
+    #[allow(non_snake_case, clippy::upper_case_acronyms)]
+    #[repr(C)]
+    struct MEMORYSTATUSEX {
+        dwLength: DWORD,
+        dwMemoryLoad: DWORD,
+        ullTotalPhys: DWORDLONG,
+        ullAvailPhys: DWORDLONG,
+        ullTotalPageFile: DWORDLONG,
+        ullAvailPageFile: DWORDLONG,
+        ullTotalVirtual: DWORDLONG,
+        ullAvailVirtual: DWORDLONG,
+        ullAvailExtendedVirtual: DWORDLONG,
+    }
+
+    #[link(name = "kernel32")]
+    extern "system" {
+        pub fn GlobalMemoryStatusEx(lpBuffer: *mut MEMORYSTATUSEX) -> BOOL;
+    }
 
     unsafe {
-        let mut mem_info: MEMORYSTATUSEX = mem::zeroed();
-        mem_info.dwLength = mem::size_of::<MEMORYSTATUSEX>() as u32;
-        if GlobalMemoryStatusEx(&mut mem_info as *mut MEMORYSTATUSEX as *mut std::ffi::c_void) != 0 {
+        let mut mem_info: MEMORYSTATUSEX = std::mem::zeroed();
+        mem_info.dwLength = std::mem::size_of::<MEMORYSTATUSEX>() as u32;
+        if GlobalMemoryStatusEx(&mut mem_info) != 0 {
             let total_ram = mem_info.ullTotalPhys;
             let available_ram = mem_info.ullAvailPhys;
 
-            return (total_ram, available_ram)
+            return (total_ram, available_ram);
         }
-
         (0, 0)
     }
 }
