@@ -10,8 +10,6 @@ mod memory;
 use filesystem::memory_fs::MemoryFS;
 use fuser::{MountOption};
 
-
-
 fn main() {
     if let Err(err) = daemon::daemonize() {
         eprintln!("Daemonization failed: {}", err);
