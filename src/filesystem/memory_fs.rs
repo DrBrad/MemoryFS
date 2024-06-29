@@ -4,6 +4,7 @@ use std::sync::{Arc, Mutex};
 use std::time::{Duration, UNIX_EPOCH};
 use fuser::{FileAttr, Filesystem, FileType, ReplyAttr, ReplyCreate, ReplyData, ReplyDirectory, ReplyEmpty, ReplyEntry, ReplyOpen, ReplyStatfs, ReplyWrite, Request};
 use crate::filesystem::inter::node::{Data, Node};
+use crate::memory;
 
 const TTL: Duration = Duration::from_secs(1); // 1 second
 
@@ -283,11 +284,12 @@ impl Filesystem for MemoryFS {
     }
 
     fn statfs(&mut self, _req: &Request, _ino: u64, reply: ReplyStatfs) {
-        // Example values for total blocks, free blocks, available blocks, etc.
+        let (total_ram, available_ram) = memory::get_memory_info();
+
         reply.statfs(
-            134217728, // total blocks
-            134217728,  // free blocks
-            134217728,  // available blocks
+            total_ram/512, // total blocks
+            available_ram/512,  // free blocks
+            available_ram/512,  // available blocks
             1000000, // total inodes
             999999-self.next_ino,  // free inodes
             512,     // block size

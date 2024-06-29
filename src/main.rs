@@ -1,12 +1,16 @@
 use std::env;
+use std::io::BufRead;
 use std::path::Path;
 use std::process::exit;
 
 pub mod filesystem;
 pub mod daemon;
+mod memory;
 
 use filesystem::memory_fs::MemoryFS;
 use fuser::{MountOption};
+
+
 
 fn main() {
     if let Err(err) = daemon::daemonize() {
@@ -34,5 +38,6 @@ fn main() {
         MountOption::Async
         //MountOption::AutoUnmount
     ];
+
     fuser::mount2(MemoryFS::default(), mountpoint, &options).unwrap();
 }
