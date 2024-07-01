@@ -11,11 +11,6 @@ use filesystem::memory_fs::MemoryFS;
 use fuser::{MountOption};
 
 fn main() {
-    if let Err(err) = daemon::daemonize() {
-        eprintln!("Daemonization failed: {}", err);
-        exit(1);
-    }
-
     let args: Vec<String> = env::args().collect();
 
     if args.len() != 2 {
@@ -28,6 +23,11 @@ fn main() {
     let path = Path::new(mountpoint);
     if !path.exists() {
         println!("The path does not exist.");
+    }
+
+    if let Err(err) = daemon::daemonize() {
+        eprintln!("Daemonization failed: {}", err);
+        exit(1);
     }
 
     let options = [
